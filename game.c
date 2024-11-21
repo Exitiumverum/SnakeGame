@@ -1,36 +1,41 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <SDL2/SDL.h>
+#include <SDL.h>
+#include <stdbool.h>
 
-static const int WIDTH = 620;
-static const int HEIGHT = 500;
+const int WIDTH = 640;
+const int HEIGHT = 480;
 
-int main(int argc, const char *argv[]){
+int main(int argc, char* args[]){
 
-	SDL_Window *window = NULL;
+	SDL_Window* window = NULL;	
+		
+	SDL_Surface* screenSurface = NULL;
 
-	if(SDL_Init(SDL_INIT_VIDEO) < 0){
-		printf("VIDEO Initialization Error");
-		SDL_GetError();
+	if(SDL_Init(SDL_INIT_VIDEO) < 0)
+	{
+		printf("SDL could not initialize! SDL_ERROR: %s\n", SDL_GetError());
 	}
 
 	else{
-		window = SDL_CreateWindow("My Window", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WIDTH, HEIGHT, SDL_WINDOW_SHOWN);
-		
-		if(window == NULL){
-			printf("Window Creation Error");
-			SDL_GetError();
-		}
+		window = SDL_CreateWindow("Snake Game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WIDTH, HEIGHT, SDL_WINDOW_SHOWN);
+		if(window == NULL)
+			printf("Window could be created! SDL_Error: \n%s", SDL_GetError());
 		else{
-			SDL_UpdateWindowSurface(window);
-			SDL_Delay(8000);
-			printf("WORKED!!");
-		}
+			screenSurface = SDL_GetWindowSurface(window);
 
+			SDL_FillRect(screenSurface , NULL, SDL_MapRGB(screenSurface->format, 0xff, 0xff,0xff));
+
+			SDL_UpdateWindowSurface(window);
+
+			SDL_Event e; bool quit = false; while( quit == false ){ while( SDL_PollEvent( &e ) ){ if( e.type == SDL_QUIT ) quit = true; } }
+		}
 	}
 
 	SDL_DestroyWindow(window);
+
 	SDL_Quit();
+
 
 	return 0;
 }
